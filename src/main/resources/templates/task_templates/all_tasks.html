@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Tasks</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<a th:href="@{/tasks/add}">Добавить задачу</a>
+<form method="GET" th:action="@{/tasks/show/}">
+    <input placeholder="Поиск по id" th:name="id" type="text">
+    <br/>
+    <select th:name="status">
+        <option/>
+        <option th:each="status : ${taskStatuses}"
+                th:text="${status.getStatusName()}"
+                th:value="${status}">
+
+        </option>
+    </select>
+    <br/>
+    <input type="submit"/>
+</form>
+
+<h2>Список задач:</h2>
+<table>
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Описание</td>
+        <td>Статус</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--/*@thymesVar id="tasks" type="java.util.List<com.gb.dz14.entities.Task>"*/-->
+    <tr th:each="t : ${taskPage.getContent()}">
+        <td th:text="${t.id}"></td>
+        <td th:text="${t.name}"></td>
+        <td th:text="${t.description}"></td>
+        <td th:text="${t.status}"></td>
+        <td><a th:href="@{'/tasks/' + ${t.id}}">Подробнее</a></td>
+    </tr>
+    </tbody>
+</table>
+<ul class="pagination">
+    <li class="page-item" th:classappend="${taskPage.getNumber() + 1 == i ? 'active' : ''}"
+        th:each="i : ${#numbers.sequence(1, taskPage.getTotalPages())}">
+        <a th:class="page-link" th:href="@{'/tasks/show?pageNumber=' + ${i}}" th:text="${i}"></a>
+    </li>
+</ul>
+<a th:href="@{/}">на Главную страницу</a>
+</body>
+</html>
